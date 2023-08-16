@@ -36,7 +36,7 @@ func dashboardHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 	w.Header().Set("Content-Type", "text/event-stream")
-	w.Header().Set("Cache-Control", "no-cache")
+	w.Header().Set("Cache-Control", "public, max-age=300")
 	w.Header().Set("Connection", "keep-alive")
 
 	timeout := time.After(1 * time.Second)
