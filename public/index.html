@@ -21,7 +21,7 @@
   </div>
     <script>
 
-const source = new EventSource("http://localhost:9001/sse")
+const source = new EventSource("/sse")
       const ul = document.getElementById("messages");
       source.onmessage = (event) => {
         var li = document.createElement("li");

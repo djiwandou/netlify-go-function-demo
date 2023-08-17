@@ -4,12 +4,15 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"log"
+	"flag"
 	"math/rand"
 	"net/http"
 	"time"
-
-	"github.com/gofiber/adaptor/v2"
-	"github.com/gofiber/fiber/v2"
+	
+	// "github.com/gofiber/adaptor/v2"
+	// "github.com/gofiber/fiber/v2"
+	"github.com/apex/gateway"
 )
 
 type Client struct {
@@ -21,9 +24,26 @@ type DashBoard struct {
 }
 
 func main() {
-	app := fiber.New()
-	app.Get("/sse", adaptor.HTTPHandler(handler(dashboardHandler)))
-	app.Listen(":9001")
+	
+	port := flag.Int("port", -1, "specify a port to use http rather than AWS Lambda")
+	flag.Parse()
+	listener := gateway.ListenAndServe
+	portStr := ""
+	if *port != -1 {
+		portStr = fmt.Sprintf(":%d", *port)
+		listener = http.ListenAndServe
+		http.Handle("/", http.FileServer(http.Dir("./public")))
+	}
+	/*using fiber*/
+	// app := fiber.New()
+	// app.Get("/sse", adaptor.HTTPHandler(handler(dashboardHandler)))
+	// app.Listen(portStr)
+	
+	/*using http Handle*/
+	http.Handle("/sse", handler(dashboardHandler))
+	fmt.Printf("port: %v\n", portStr)
+	log.Fatal(listener(portStr, nil))
+
 }
 
 func handler(f http.HandlerFunc) http.Handler {
